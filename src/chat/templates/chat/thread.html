@@ -21,6 +21,41 @@
 
 <script>
 // websocket scripts
+var loc = window.location
+var wsStart = "ws://"
+
+var endpoint = wsStart + loc.host + loc.pathname
+var socket = new WebSocket(endpoint)
+
+var formData = $("#form")
+var msgInput = $("#id_message")
+
+socket.onclose = function(e){
+ console.log("close", e)
+
+}
+
+socket.onopen = function(e){
+    console.log("open", e)
+    formData.submit(function (event) {
+        event.preventDefault()
+        var messageText = msgInput.val()
+        var data = {
+            "message": messageText
+        }
+        socket.send(JSON.stringify(data))
+        formData[0].reset()
+
+    })
+}
+
+socket.onerror = function(e){
+     console.log("error", e)
+}
+
+socket.onmessage = function (e) {
+     console.log("message", e)
+}
 
 </script>
 {% endblock %}
